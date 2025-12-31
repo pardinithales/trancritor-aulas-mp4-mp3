@@ -1,0 +1,46 @@
+# Arquivos de ambiente e API Keys
+.env
+.env.local
+.env.*.local
+*.key
+
+# Arquivos de audio e video (pesados)
+aulas/*.mp3
+aulas/*.mp4
+aulas/*.wav
+aulas/*.m4a
+aulas_mp3/*.mp3
+
+# Chunks temporarios
+chunks/
+transcricoes/chunks/
+
+# Arquivos Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+venv/
+ENV/
+.venv
+
+# IDEs
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Sistema operacional
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Logs
+*.log
+
+# Arquivos temporarios
+*.tmp
+*.temp
