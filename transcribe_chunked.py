@@ -132,18 +132,19 @@ def transcribe_chunk(chunk_path, openai_client):
 
 def cleanup_chunks(audio_name):
     chunks_dir = f"chunks/{audio_name}"
-    chunks_transcriptions = "transcricoes/chunks"
     
     if os.path.exists(chunks_dir):
         import shutil
         shutil.rmtree(chunks_dir)
         log(f"[LIMPEZA] Chunks de audio removidos: {chunks_dir}")
     
-    if os.path.exists(chunks_transcriptions):
-        chunk_files = glob.glob(f"{chunks_transcriptions}/*{audio_name}*")
+    chunks_transcriptions_dir = f"transcricoes/chunks"
+    if os.path.exists(chunks_transcriptions_dir):
+        parent_chunks = Path(chunks_dir).name
+        chunk_files = glob.glob(f"{chunks_transcriptions_dir}/chunk_*_transcricao.txt")
         for file in chunk_files:
             os.remove(file)
-        log(f"[LIMPEZA] Transcricoes temporarias removidas")
+            log(f"[LIMPEZA] Arquivo temporario removido: {file}")
 
 def process_audio(audio_path, openai_client, gemini_model):
     audio_name = Path(audio_path).stem
