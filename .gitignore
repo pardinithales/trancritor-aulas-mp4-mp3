@@ -5,6 +5,10 @@
 *.key
 
 # Arquivos de audio e video (pesados)
+*.mp3
+*.mp4
+*.wav
+*.m4a
 aulas/*.mp3
 aulas/*.mp4
 aulas/*.wav
