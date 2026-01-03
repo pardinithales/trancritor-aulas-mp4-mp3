@@ -2,7 +2,7 @@ import os
 import sys
 from openai import OpenAI
 from dotenv import load_dotenv
-import google.generativeai as genai
+from google import genai  # Updated to new google-genai library
 from pathlib import Path
 from datetime import datetime
 import glob
@@ -146,7 +146,7 @@ def cleanup_chunks(audio_name):
             os.remove(file)
             log(f"[LIMPEZA] Arquivo temporario removido: {file}")
 
-def process_audio(audio_path, openai_client, gemini_model):
+def process_audio(audio_path, openai_client, gemini_client):
     audio_name = Path(audio_path).stem
     final_file = f"transcricoes/{audio_name}_PT-BR.txt"
     
@@ -203,19 +203,22 @@ Transcricao original em ingles:
 Retorne APENAS a transcricao traduzida e corrigida em PT-BR, sem comentarios adicionais."""
     
     log("Enviando para o Gemini processar traducao...")
-    
+
+    # Updated config format for new google-genai library
     generation_config = {
         "temperature": 0.3,
         "top_p": 0.95,
         "top_k": 40,
         "max_output_tokens": 65536,
     }
-    
-    response = gemini_model.generate_content(
-        prompt,
-        generation_config=generation_config
+
+    # New API: client.models.generate_content() with model as parameter
+    response = gemini_client.models.generate_content(
+        model="gemini-3-flash-preview",
+        contents=prompt,
+        config=generation_config
     )
-    
+
     translated_text = response.text
     log(f"[OK] Traducao concluida ({len(translated_text)} caracteres)")
     
@@ -265,9 +268,9 @@ def main():
     log("\nInicializando APIs...")
     openai_client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
     log("[OK] OpenAI conectado")
-    
-    genai.configure(api_key=os.getenv("GEMINI_API_KEY"))
-    gemini_model = genai.GenerativeModel("gemini-3-flash-preview")
+
+    # Updated to use new google-genai library (Client-based API)
+    gemini_client = genai.Client(api_key=os.getenv("GEMINI_API_KEY"))
     log("[OK] Gemini Flash 3.0 inicializado")
     
     success_count = 0
@@ -285,7 +288,7 @@ def main():
             else:
                 audio_file = file
             
-            if process_audio(audio_file, openai_client, gemini_model):
+            if process_audio(audio_file, openai_client, gemini_client):
                 success_count += 1
         except Exception as e:
             log(f"[ERRO] Falha ao processar {file}: {str(e)}")
